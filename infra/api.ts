@@ -19,3 +19,9 @@ api.route("GET /notes/{id}", "packages/functions/src/get.main");
 
 // get all notes of the user
 api.route("GET /notes", "packages/functions/src/list.main");
+
+// update a note
+api.route("PUT /notes/{id}", "packages/functions/src/update.main");
+
+// delete a note
+api.route("DELETE /notes/{id}", "packages/functions/src/delete.main");
