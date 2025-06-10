@@ -17,5 +17,5 @@ api.route("POST /notes", "packages/functions/src/create.main");
 // get a note
 api.route("GET /notes/{id}", "packages/functions/src/get.main");
 
-// get all notes of the us
+// get all notes of the user
 api.route("GET /notes", "packages/functions/src/list.main");
