@@ -18,8 +18,8 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  setIsAuthenticated: (flag: boolean) => void;
   logout: () => Promise<void>;
+  checkAuthState: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -69,8 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     isLoading,
     isAuthenticated,
-    setIsAuthenticated,
     logout,
+    checkAuthState,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

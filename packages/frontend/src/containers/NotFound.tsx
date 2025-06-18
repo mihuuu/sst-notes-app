@@ -2,16 +2,16 @@ import { Link } from 'react-router-dom';
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center pt-60">
       <div className="text-center max-w-md mx-auto px-4">
         {/* 404 Icon */}
         <div className="mb-8">
-          <div className="text-8xl font-bold text-gray-300 mb-4">404</div>
+          <div className="text-8xl font-bold text-primary mb-4">404</div>
         </div>
 
         {/* Error Message */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Page Not Found</h1>
-        <p className="text-lg text-gray-600 mb-8">
+        <h1 className="text-3xl font-bold text-base-800 mb-4">Page Not Found</h1>
+        <p className="text-lg text-base-600 mb-8">
           Sorry, the page you're looking for doesn't exist or has been moved.
         </p>
 
@@ -22,10 +22,10 @@ export default function NotFound() {
           </Link>
 
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
-            <button onClick={() => window.history.back()} className="btn btn-outline btn-sm">
+            <button onClick={() => window.history.back()} className="btn btn-ghost btn-sm">
               Go Back
             </button>
-            <button onClick={() => window.location.reload()} className="btn btn-outline btn-sm">
+            <button onClick={() => window.location.reload()} className="btn btn-ghost btn-sm">
               Refresh Page
             </button>
           </div>

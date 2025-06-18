@@ -8,14 +8,14 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center pt-60">
       <div className="text-center">
         {isAuthenticated && name ? (
-          <div className="text-lg mt-4 font-light text-gray-500">
-            <h2 className="text-2xl font-bold text-gray-600">Welcome back, {name}!</h2>
+          <div className="text-lg mt-4 font-light text-base-500">
+            <h2 className="text-2xl font-bold text-base-600">Welcome back, {name}!</h2>
             <p className="mt-4">Ready to take some notes?</p>
           </div>
         ) : (
           <>
-            <h1 className="text-4xl font-bold text-gray-600">SnapNote</h1>
-            <p className="text-lg mt-4 font-light text-gray-500">A simple note taking app</p>
+            <h1 className="text-4xl font-bold text-base-500">SnapNote</h1>
+            <p className="text-lg mt-4 font-light text-base-500">A simple note taking app</p>
           </>
         )}
       </div>

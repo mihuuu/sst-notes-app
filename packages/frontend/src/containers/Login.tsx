@@ -6,7 +6,7 @@ import { useFormFields } from '../utils/hooks';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading, checkAuthState } = useAuth();
   const { data, errors, handleChange, setErrors } = useFormFields({
     email: '',
     password: '',
@@ -76,7 +76,7 @@ export default function Login() {
 
       if (isSignedIn) {
         // Refresh auth state to ensure context is updated
-        setIsAuthenticated(true);
+        checkAuthState();
         // Redirect to home page after successful login
         navigate('/');
       } else if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
@@ -120,15 +120,9 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 flex flex-col items-center">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-base-900">
           Sign in to your account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
-          <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
-            create a new account
-          </Link>
-        </p>
 
         {errors.general && (
           <div className="alert alert-error">
@@ -137,7 +131,7 @@ export default function Login() {
         )}
 
         <fieldset className="fieldset w-sm text-sm">
-          <label className="label mt-2 text-gray-600">Email address</label>
+          <label className="label mt-2">Email address</label>
           <input
             id="email"
             name="email"
@@ -152,7 +146,7 @@ export default function Login() {
           />
           {errors.email ? <p className="text-error">{errors.email}</p> : null}
 
-          <label className="label mt-2 text-gray-600">Password</label>
+          <label className="label mt-2">Password</label>
           <input
             id="password"
             name="password"
@@ -173,10 +167,10 @@ export default function Login() {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="checkbox checkbox-xs rounded"
                 disabled={isSubmitting}
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              <label htmlFor="remember-me" className="ml-2 block text-sm">
                 Remember me
               </label>
             </div>
@@ -203,6 +197,13 @@ export default function Login() {
               'Sign in'
             )}
           </button>
+
+          <p className="mt-4 text-center text-sm text-base-content/80">
+            Or{' '}
+            <Link to="/signup" className="font-medium text-primary hover:text-primary/80">
+              create a new account
+            </Link>
+          </p>
         </fieldset>
       </div>
     </div>

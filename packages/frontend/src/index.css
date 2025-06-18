@@ -1,11 +1,15 @@
 @import 'tailwindcss';
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: all;
+}
 
-@theme {
-  --font-sans: InterVariable, sans-serif;
+@plugin "daisyui/theme" {
+  name: 'emerald';
+  default: true;
 }
 
 :root {
+  --radius-field: 2rem;
 }
 
 body {

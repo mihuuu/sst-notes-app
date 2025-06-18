@@ -10,9 +10,9 @@ import './App.css';
 function App() {
   return (
     <AuthProvider>
-      <div className="flex flex-col min-h-screen bg-gray-50">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-1 bg-gray-50">
+        <main className="flex-grow bg-base-200">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

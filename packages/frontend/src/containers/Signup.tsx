@@ -7,7 +7,7 @@ import EmailConfirmation from '../components/EmailConfirmation';
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading, checkAuthState } = useAuth();
   const { data, errors, handleChange, setErrors } = useFormFields({
     name: '',
     email: '',
@@ -32,7 +32,7 @@ export default function Signup() {
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="loading loading-spinner loading-lg"></span>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4">Loading...</p>
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ export default function Signup() {
 
       if (isSignUpComplete) {
         // User is automatically signed in
-        setIsAuthenticated(true);
+        checkAuthState();
         navigate('/');
       } else if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
         // User needs to confirm their email
@@ -163,15 +163,9 @@ export default function Signup() {
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 flex flex-col items-center">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-base-900">
           Create your account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            sign in to your existing account
-          </Link>
-        </p>
 
         {errors.general && (
           <div className="alert alert-error">
@@ -180,7 +174,7 @@ export default function Signup() {
         )}
 
         <fieldset className="fieldset w-sm text-sm">
-          <label className="label mt-2 text-gray-600">User name</label>
+          <label className="label mt-2">User name</label>
           <input
             id="name"
             name="name"
@@ -194,7 +188,7 @@ export default function Signup() {
           />
           {errors.name ? <p className="text-error">{errors.name}</p> : null}
 
-          <label className="label mt-2 text-gray-600">Email address</label>
+          <label className="label mt-2">Email address</label>
           <input
             id="email"
             name="email"
@@ -209,7 +203,7 @@ export default function Signup() {
           />
           {errors.email ? <p className="text-error">{errors.email}</p> : null}
 
-          <label className="label mt-2 text-gray-600">Password</label>
+          <label className="label mt-2">Password</label>
           <input
             id="password"
             name="password"
@@ -224,7 +218,7 @@ export default function Signup() {
           />
           {errors.password ? <p className="text-error">{errors.password}</p> : null}
 
-          <label htmlFor="confirmPassword" className="label mt-2 text-gray-600">
+          <label htmlFor="confirmPassword" className="label mt-2">
             Confirm password
           </label>
           <input
@@ -256,6 +250,12 @@ export default function Signup() {
               'Create account'
             )}
           </button>
+          <p className="mt-4 text-center text-sm text-base-content/80">
+            Or{'  '}
+            <Link to="/login" className="font-medium text-primary hover:text-primary/80">
+              sign in to your existing account
+            </Link>
+          </p>
         </fieldset>
       </div>
     </div>
