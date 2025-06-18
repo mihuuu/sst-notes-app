@@ -1,12 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import ThemeToggle from '../components/ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { name: userName } = user?.attributes || {};
   const navigate = useNavigate();
-  console.log('isAuthenticated', isAuthenticated);
 
   const handleLogout = async () => {
     await logout();

@@ -1,26 +1,7 @@
-import { useEffect, useState } from 'react';
-
-enum THEME {
-  LIGHT = 'emerald',
-  DARK = 'forest',
-}
+import { ThemeType, useTheme } from '../contexts/ThemeContext';
 
 export default function ThemeToggle() {
-  // start with system preference or default to light
-  const [theme, setTheme] = useState<THEME>(
-    (localStorage.getItem('theme') as THEME) ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? THEME.DARK : THEME.LIGHT)
-  );
-
-  // whenever `theme` changes, update `data-theme` and persist
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const handleChange = () => {
-    setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK);
-  };
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <label className="flex cursor-pointer gap-2">
@@ -41,8 +22,8 @@ export default function ThemeToggle() {
       <input
         type="checkbox"
         className="toggle theme-controller"
-        checked={theme === THEME.DARK}
-        onChange={handleChange}
+        checked={theme === ThemeType.DARK}
+        onChange={toggleTheme}
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"

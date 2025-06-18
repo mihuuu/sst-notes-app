@@ -5,6 +5,8 @@ import { Amplify } from 'aws-amplify';
 import App from './App.tsx';
 import config from './config.ts';
 import './index.css';
+import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 Amplify.configure({
   Auth: {
@@ -36,8 +38,12 @@ Amplify.configure({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <AuthProvider>
+      <ThemeProvider>
+        <Router>
+          <App />
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   </StrictMode>
 );

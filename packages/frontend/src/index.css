@@ -1,20 +1,25 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-  themes: all;
+  themes:
+    emerald --default,
+    forest --prefersdark;
 }
 
 @plugin "daisyui/theme" {
-  name: 'emerald';
-  default: true;
+  /* name: 'emerald';
+  default: true; */
 }
 
 :root {
   --radius-field: 2rem;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+  overflow: hidden;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100vh;
+  min-width: 100vw;
 }
