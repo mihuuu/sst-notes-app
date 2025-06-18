@@ -1,9 +1,23 @@
+import { useAuth } from '../contexts/AuthContext';
+
 export default function Home() {
+  const { isAuthenticated, user } = useAuth();
+  const { name } = user?.attributes || {};
+
   return (
     <div className="flex flex-col items-center justify-center pt-60">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-600">QuickNotes</h1>
-        <p className="text-lg mt-4 font-light text-gray-500">A simple note taking app</p>
+        {isAuthenticated && name ? (
+          <div className="text-lg mt-4 font-light text-gray-500">
+            <h2 className="text-2xl font-bold text-gray-600">Welcome back, {name}!</h2>
+            <p className="mt-4">Ready to take some notes?</p>
+          </div>
+        ) : (
+          <>
+            <h1 className="text-4xl font-bold text-gray-600">QuickNotes</h1>
+            <p className="text-lg mt-4 font-light text-gray-500">A simple note taking app</p>
+          </>
+        )}
       </div>
     </div>
   );

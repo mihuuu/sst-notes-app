@@ -1,31 +1,89 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
+  const { user, isAuthenticated, isLoading, logout, setIsAuthenticated } = useAuth();
+  const { name: userName } = user?.attributes || {};
+  const navigate = useNavigate();
+  console.log('isAuthenticated', isAuthenticated);
+
+  const handleLogout = async () => {
+    await logout();
+    setIsAuthenticated(false);
+    navigate('/');
+  };
+
   return (
     <div className="navbar sticky top-0 z-50 bg-base-100 shadow-sm px-4">
-      <div className="flex-1">
+      <div className="flex-none">
         <Link to="/" className="btn btn-ghost text-xl text-gray-800">
           <img src="/favicon-96x96.png" alt="QuickNotes" className="w-8 h-8" /> QuickNotes
         </Link>
       </div>
-      <div className="flex-none gap-4">
-        <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-        <ul className="menu menu-horizontal px-1">
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/signup">Signup</Link>
-          </li>
-        </ul>
-        {/* <div role="button" className="btn btn-ghost btn-circle avatar">
-          <div className="w-10 rounded-full">
-            <img
-              alt="Avatar"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-            />
-          </div>
-        </div> */}
+      <div className="flex grow justify-end px-2">
+        {isLoading ? null : isAuthenticated ? (
+          <>
+            <label className="input mr-6">
+              <svg
+                className="h-[1em] opacity-50"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  strokeWidth="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </g>
+              </svg>
+              <input type="search" className="grow" placeholder="Search" />
+            </label>
+
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar avatar-placeholder"
+              >
+                <div className="bg-primary text-primary-content w-8 rounded-full">
+                  <span>{userName ? userName.charAt(0).toUpperCase() : ''}</span>
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              >
+                <div className="text-gray-600 p-4">Welcome, {userName || 'User'}!</div>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-ghost justify-start w-full"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Logging out...' : 'Logout'}
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <ul className="menu menu-horizontal gap-4">
+            <li>
+              <Link to="/login" className="btn btn-primary">
+                Login
+              </Link>
+            </li>
+            <li>
+              <Link to="/signup" className="btn btn-ghost">
+                Signup
+              </Link>
+            </li>
+          </ul>
+        )}
       </div>
     </div>
   );
