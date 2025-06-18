@@ -14,7 +14,7 @@ export default function Home() {
           </div>
         ) : (
           <>
-            <h1 className="text-4xl font-bold text-gray-600">QuickNotes</h1>
+            <h1 className="text-4xl font-bold text-gray-600">SnapNote</h1>
             <p className="text-lg mt-4 font-light text-gray-500">A simple note taking app</p>
           </>
         )}

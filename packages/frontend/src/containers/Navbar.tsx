@@ -17,7 +17,7 @@ export default function Navbar() {
     <div className="navbar sticky top-0 z-50 bg-base-100 shadow-sm px-4">
       <div className="flex-none">
         <Link to="/" className="btn btn-ghost text-xl text-gray-800">
-          <img src="/favicon-96x96.png" alt="QuickNotes" className="w-8 h-8" /> QuickNotes
+          <img src="/favicon-96x96.png" alt="SnapNote" className="w-8 h-8" /> SnapNote
         </Link>
       </div>
       <div className="flex grow justify-end px-2">
