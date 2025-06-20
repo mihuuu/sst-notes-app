@@ -4,6 +4,7 @@ import { getUrl } from 'aws-amplify/storage';
 interface AttachmentDisplayProps {
   fileName: string;
   mode?: 'view' | 'edit' | 'create';
+  onRemove?: () => void;
   className?: string;
 }
 

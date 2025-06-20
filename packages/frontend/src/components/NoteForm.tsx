@@ -174,7 +174,7 @@ export default function NoteForm({
 
   return (
     <div className="card bg-base-100 shadow-xl">
-      <div className="card-body">
+      <div className="card-body text-base-content">
         <h2 className="card-title text-2xl font-bold mb-6">
           {mode === 'create' ? 'Create New Note' : 'Edit Note'}
         </h2>
@@ -249,7 +249,7 @@ export default function NoteForm({
                 required
               />
             ) : (
-              <div className="p-4 h-64 overflow-y-auto bg-base-50 border rounded-lg">
+              <div className="p-4 overflow-auto bg-base-50">
                 {data.content ? (
                   <div className="prose prose-sm max-w-none">
                     <ReactMarkdown>{data.content}</ReactMarkdown>

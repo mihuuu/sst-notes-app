@@ -109,13 +109,18 @@ export default function ViewNote() {
   // Show note content in view mode
   return (
     <AuthWrapper>
-      <div className="container mx-auto p-10 max-w-5xl overflow-auto">
+      <div className="container mx-auto max-w-5xl">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="card-title text-2xl font-bold">View Note</h2>
+              <h1 className="card-title text-2xl font-bold">{originalNote.title || 'Untitled'}</h1>
               <div className="flex gap-2">
-                <button onClick={() => setIsEditing(true)} className="btn btn-outline btn-primary">
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                  className="btn btn-outline btn-primary"
+                >
                   Edit
                 </button>
                 <button onClick={() => navigate('/list')} className="btn btn-outline">
@@ -127,16 +132,6 @@ export default function ViewNote() {
             {/* Note Metadata */}
             <div className="text-sm text-base-content/60 mb-4">
               Created: {formatDate(originalNote.createdAt)}
-            </div>
-
-            {/* Title */}
-            <div className="form-control mb-6">
-              <label className="label">
-                <span className="label-text font-semibold">Title</span>
-              </label>
-              <div className="text-xl font-semibold p-3 bg-base-50 rounded-lg">
-                {originalNote.title || 'Untitled'}
-              </div>
             </div>
 
             {/* Content */}

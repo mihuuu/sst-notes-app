@@ -24,7 +24,7 @@ function App() {
       <Navbar />
       <div className="flex flex-grow flex-row">
         {isAuthenticated && <Sidebar />}
-        <div className="flex-grow max-h-screen overflow-auto">
+        <div className="flex-grow max-h-screen overflow-auto p-10">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
