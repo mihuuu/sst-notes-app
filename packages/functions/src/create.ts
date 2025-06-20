@@ -8,6 +8,7 @@ const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const main = Util.handler(async (event) => {
   let data = {
+    title: "",
     content: "",
     attachment: "",
   };
@@ -22,6 +23,7 @@ export const main = Util.handler(async (event) => {
       // The attributes of the item to be created
       userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId, // The id of the author
       noteId: uuid.v1(), // A unique uuid
+      title: data.title, // Parsed from request body
       content: data.content, // Parsed from request body
       attachment: data.attachment, // Parsed from request body
       createdAt: Date.now(), // Current Unix timestamp

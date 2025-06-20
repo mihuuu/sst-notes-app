@@ -4,19 +4,18 @@ import Login from './containers/Login';
 import Navbar from './components/Navbar';
 import NotFound from './containers/NotFound';
 import Signup from './containers/Signup';
+import CreateNote from './containers/CreateNote';
 import { useAuth } from './contexts/AuthContext';
 import Sidebar from './components/Sidebar';
+import List from './containers/List';
 import './App.css';
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-w-screen min-h-screen flex items-center justify-center">
-        <span className="loading loading-infinity loading-xl text-primary"></span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
@@ -29,6 +28,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/list" element={<List />} />
+            <Route path="/create" element={<CreateNote />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

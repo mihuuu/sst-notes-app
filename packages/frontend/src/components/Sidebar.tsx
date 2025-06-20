@@ -24,7 +24,7 @@ export default function Sidebar() {
   const menuItems = [
     {
       label: 'All Notes',
-      path: '/',
+      path: '/list',
       icon: (
         <SvgWrapper>
           <path
@@ -68,24 +68,17 @@ export default function Sidebar() {
     <ul
       className={`menu border-r-2 border-base-200 bg-base-100 w-80 px-4 py-6 hidden lg:flex flex-col gap-2`}
     >
-      {/* <li>
-        <a className="btn" onClick={handleSidebarToggle}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"
-            />
-          </svg>
-        </a>
-      </li> */}
+      {/* Create Note Button */}
+      <li className="mb-4">
+        <NavLink to="/create" className="btn btn-primary w-full">
+          <SvgWrapper>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </SvgWrapper>
+          Create Note
+        </NavLink>
+      </li>
+
+      {/* Menu Items */}
       {menuItems.map((item) => (
         <li key={item.label}>
           <NavLink

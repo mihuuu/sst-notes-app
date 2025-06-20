@@ -9,8 +9,8 @@ export default function Home() {
       <div className="text-center">
         {isAuthenticated && name ? (
           <>
-            <h2 className="text-2xl font-bold text-base-500">Welcome back, {name}!</h2>
-            <p className="mt-4 text-base-500">Ready to take some notes?</p>
+            <h2 className="text-4xl font-bold text-base-500">Welcome back, {name}!</h2>
+            <p className="text-lg mt-4 font-light text-base-500">Ready to take some notes?</p>
           </>
         ) : (
           <>

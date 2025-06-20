@@ -17,8 +17,10 @@ export const main = Util.handler(async (event) => {
     },
     // 'UpdateExpression' defines the attributes to be updated
     // 'ExpressionAttributeValues' defines the value in the update expression
-    UpdateExpression: "SET content = :content, attachment = :attachment",
+    UpdateExpression:
+      "SET title = :title, content = :content, attachment = :attachment",
     ExpressionAttributeValues: {
+      ":title": data.title || null,
       ":attachment": data.attachment || null,
       ":content": data.content || null,
     },
