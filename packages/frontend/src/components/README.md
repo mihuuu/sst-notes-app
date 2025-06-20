@@ -92,6 +92,62 @@ function MyComponent() {
 - `onRetry`: () => void (optional) - Function to call when retry button is clicked
 - `retryText`: string (default: 'Try Again') - Text for the retry button
 
+## AttachmentDisplay
+
+Displays file attachments with preview, download, and view functionality. Supports images, PDFs, and other file types.
+
+### Usage
+
+```tsx
+import AttachmentDisplay from '../components/AttachmentDisplay';
+
+// View mode (default)
+function ViewNote() {
+  return <AttachmentDisplay fileName="1703123456789-document.pdf" mode="view" />;
+}
+
+// Edit mode with remove functionality
+function EditNote() {
+  const handleRemove = () => {
+    // Handle attachment removal
+  };
+
+  return (
+    <AttachmentDisplay fileName="1703123456789-document.pdf" mode="edit" onRemove={handleRemove} />
+  );
+}
+
+// With custom styling
+function CustomNote() {
+  return <AttachmentDisplay fileName="1703123456789-image.jpg" mode="view" className="mb-4" />;
+}
+```
+
+### Props
+
+- `fileName`: string - The filename of the attachment (required)
+- `mode`: 'view' | 'edit' | 'create' (default: 'view') - Display mode
+- `onRemove`: () => void (optional) - Function called when remove button is clicked (only in edit mode)
+- `className`: string (optional) - Additional CSS classes
+
+### Features
+
+- **File Type Detection**: Automatically detects file type based on extension
+- **Image Preview**: Displays images inline with proper sizing
+- **PDF Preview**: Embeds PDFs in an iframe for viewing
+- **Download**: Provides download functionality for all file types
+- **View in New Tab**: Opens files in a new tab for viewing
+- **Remove Option**: In edit mode, allows removing existing attachments
+- **Loading States**: Shows loading spinner while fetching attachment
+- **Error Handling**: Displays error messages if attachment fails to load
+- **Responsive Design**: Works well on different screen sizes
+
+### Supported File Types
+
+- **Images**: jpg, jpeg, png, gif, webp
+- **Documents**: pdf, txt, doc, docx, xls, xlsx, ppt, pptx
+- **Others**: Any file type (shows generic preview message)
+
 ## Custom Hooks
 
 ### useLoadingState

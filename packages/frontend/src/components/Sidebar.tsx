@@ -65,32 +65,37 @@ export default function Sidebar() {
   ];
 
   return (
-    <ul
-      className={`menu border-r-2 border-base-200 bg-base-100 w-80 px-4 py-6 hidden lg:flex flex-col gap-2`}
-    >
-      {/* Create Note Button */}
-      <li className="mb-4">
-        <NavLink to="/create" className="btn btn-primary w-full">
-          <SvgWrapper>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-          </SvgWrapper>
-          Create Note
-        </NavLink>
-      </li>
-
-      {/* Menu Items */}
-      {menuItems.map((item) => (
-        <li key={item.label}>
-          <NavLink
-            to={item.path}
-            className={({ isActive }) => (isActive ? 'menu-active' : '')}
-            end={item.path === '/'}
-          >
-            {!!item.icon && item.icon}
-            {item.label}
+    <aside className="w-80 h-screen border-base-200 bg-base-100 border-r-2 hidden lg:flex flex-col">
+      <ul className={`menu w-full px-4 py-6 gap-2`}>
+        {/* Create Note Button */}
+        <li className="mb-4">
+          <NavLink to="/create" className="btn btn-primary w-full">
+            <SvgWrapper>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
+            </SvgWrapper>
+            Create Note
           </NavLink>
         </li>
-      ))}
-    </ul>
+
+        {/* Menu Items */}
+        {menuItems.map((item) => (
+          <li key={item.label}>
+            <NavLink
+              to={item.path}
+              className={({ isActive }) => (isActive ? 'menu-active' : '')}
+              end={item.path === '/'}
+            >
+              {!!item.icon && item.icon}
+              {item.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    </aside>
   );
 }

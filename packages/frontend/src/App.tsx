@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import NotFound from './containers/NotFound';
 import Signup from './containers/Signup';
 import CreateNote from './containers/CreateNote';
+import ViewNote from './containers/ViewNote';
 import { useAuth } from './contexts/AuthContext';
 import Sidebar from './components/Sidebar';
 import List from './containers/List';
@@ -23,13 +24,14 @@ function App() {
       <Navbar />
       <div className="flex flex-grow flex-row">
         {isAuthenticated && <Sidebar />}
-        <div className="flex-grow">
+        <div className="flex-grow max-h-screen overflow-auto">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/list" element={<List />} />
             <Route path="/create" element={<CreateNote />} />
+            <Route path="/note/:noteId" element={<ViewNote />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
