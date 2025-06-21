@@ -4,4 +4,5 @@ export interface Note {
   content: string;
   attachment: string;
   createdAt: number;
+  starred?: boolean;
 }

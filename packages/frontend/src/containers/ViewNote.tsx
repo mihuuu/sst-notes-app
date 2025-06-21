@@ -10,6 +10,7 @@ import AttachmentDisplay from '../components/AttachmentDisplay';
 import { useLoadingState } from '../utils/hooks';
 import { formatDate } from '../utils';
 import type { Note } from '../types/note';
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
 export default function ViewNote() {
   const { noteId } = useParams<{ noteId: string }>();
@@ -73,6 +74,7 @@ export default function ViewNote() {
 
   const handleEditCancel = () => {
     setIsEditing(false);
+    navigate('/list');
   };
 
   // Show loading while fetching note
@@ -115,6 +117,13 @@ export default function ViewNote() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="card-title text-2xl font-bold">{originalNote.title || 'Untitled'}</h1>
               <div className="flex gap-2">
+                <button
+                  className={`btn btn-square btn-ghost`}
+                  title={originalNote.starred ? 'Unstar note' : 'Star note'}
+                  disabled
+                >
+                  {originalNote.starred && <StarIconSolid className="size-5 text-yellow-500" />}
+                </button>
                 <button
                   onClick={() => {
                     setIsEditing(true);

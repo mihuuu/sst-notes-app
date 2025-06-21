@@ -9,10 +9,10 @@ export const api = new sst.aws.ApiGatewayV2("Api", {
         link: [table, secret],
       },
       args: {
-        auth: { iam: true }
+        auth: { iam: true },
       },
-    }
-  }
+    },
+  },
 });
 
 // create a note
@@ -29,6 +29,9 @@ api.route("PUT /notes/{id}", "packages/functions/src/update.main");
 
 // delete a note
 api.route("DELETE /notes/{id}", "packages/functions/src/delete.main");
+
+// star/unstar a note
+api.route("PUT /notes/{id}/star", "packages/functions/src/star.main");
 
 // create billing
 api.route("POST /billing", "packages/functions/src/billing.main");

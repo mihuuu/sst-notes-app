@@ -27,6 +27,7 @@ export const main = Util.handler(async (event) => {
       content: data.content, // Parsed from request body
       attachment: data.attachment, // Parsed from request body
       createdAt: Date.now(), // Current Unix timestamp
+      starred: false, // Default to not starred
     },
   };
 

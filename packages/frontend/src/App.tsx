@@ -8,9 +8,10 @@ import CreateNote from './containers/CreateNote';
 import ViewNote from './containers/ViewNote';
 import { useAuth } from './contexts/AuthContext';
 import Sidebar from './components/Sidebar';
+import Favorites from './containers/Favorites';
 import List from './containers/List';
-import './App.css';
 import LoadingSpinner from './components/LoadingSpinner';
+import './App.css';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -30,6 +31,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/list" element={<List />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/create" element={<CreateNote />} />
             <Route path="/note/:noteId" element={<ViewNote />} />
             <Route path="*" element={<NotFound />} />
