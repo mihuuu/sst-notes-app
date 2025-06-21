@@ -4,7 +4,9 @@ export interface Note {
   content: string;
   attachment: string;
   createdAt: number;
+  updatedAt?: number;
   starred?: boolean;
   deleted?: boolean;
   deletedAt?: number;
+  tags?: string[];
 }

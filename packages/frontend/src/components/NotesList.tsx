@@ -13,6 +13,8 @@ import {
   PencilSquareIcon,
   TrashIcon,
   DocumentTextIcon,
+  AdjustmentsHorizontalIcon,
+  TagIcon,
 } from '@heroicons/react/24/outline';
 import {
   StarIcon as StarIconSolid,
@@ -29,7 +31,27 @@ interface NotesListProps {
   countLabel?: string;
   showCreateButton?: boolean;
   searchQuery?: string;
+  tagFilter?: string;
 }
+
+type SortField = 'createdAt' | 'updatedAt' | 'title' | 'starred';
+type SortOrder = 'asc' | 'desc';
+
+interface SortOption {
+  value: string;
+  label: string;
+}
+
+const sortOptions: SortOption[] = [
+  { value: 'createdAt-desc', label: 'Newest first' },
+  { value: 'createdAt-asc', label: 'Oldest first' },
+  { value: 'updatedAt-desc', label: 'Recently updated' },
+  // { value: 'updatedAt-asc', label: 'Least recently updated' },
+  // { value: 'title-asc', label: 'Title A-Z' },
+  // { value: 'title-desc', label: 'Title Z-A' },
+  // { value: 'starred-desc', label: 'Starred first' },
+  // { value: 'starred-asc', label: 'Unstarred first' },
+];
 
 export default function NotesList({
   title,
@@ -40,13 +62,17 @@ export default function NotesList({
   countLabel = 'Total notes',
   showCreateButton = true,
   searchQuery,
+  tagFilter,
 }: NotesListProps) {
   const navigate = useNavigate();
   const [notes, setNotes] = useState<Note[]>([]);
+  const [sortBy, setSortBy] = useState<SortField>('createdAt');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const { loading, error, setLoading, setError, clearError } = useLoadingState(true);
 
   const fetchNotes = async () => {
     try {
+      setLoading(true);
       clearError();
       // Build query parameters
       const queryParams = new URLSearchParams();
@@ -59,6 +85,12 @@ export default function NotesList({
       if (searchQuery && searchQuery.trim()) {
         queryParams.append('keyword', searchQuery.trim());
       }
+      if (tagFilter && tagFilter.trim()) {
+        queryParams.append('tag', tagFilter.trim());
+      }
+      // Add sorting parameters
+      queryParams.append('sortBy', sortBy);
+      queryParams.append('sortOrder', sortOrder);
 
       const response = await get({
         apiName: 'notes',
@@ -83,16 +115,17 @@ export default function NotesList({
 
   useEffect(() => {
     fetchNotes();
-  }, [showStarred, showDeleted, searchQuery]);
+  }, [showStarred, showDeleted, searchQuery, tagFilter, sortBy, sortOrder]);
+
+  const handleSortChange = (sortValue: string) => {
+    const [field, order] = sortValue.split('-') as [SortField, SortOrder];
+    setSortBy(field);
+    setSortOrder(order);
+  };
 
   const handleRemoveItem = (noteId: string) => {
     setNotes((prev) => prev.filter((n) => n.noteId !== noteId));
   };
-
-  // Show loading while fetching notes
-  if (loading) {
-    return <LoadingSpinner message={`Loading notes...`} />;
-  }
 
   // Show error if failed to load notes
   if (error) {
@@ -100,18 +133,44 @@ export default function NotesList({
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">{title}</h1>
-        {showCreateButton && (
-          <button className="btn btn-primary" onClick={() => navigate('/create')}>
-            <PlusIcon className="size-5" />
-            Create Note
-          </button>
-        )}
+        <div className="flex gap-2 items-center">
+          {/* Sort Dropdown */}
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
+              Sort
+              <AdjustmentsHorizontalIcon className="size-4" />
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu px-2 py-4 shadow-lg bg-base-100 rounded-box w-52"
+            >
+              {sortOptions.map((option) => (
+                <li key={option.value}>
+                  <button
+                    onClick={() => handleSortChange(option.value)}
+                    className={sortBy + '-' + sortOrder === option.value ? 'menu-active' : ''}
+                  >
+                    {option.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {showCreateButton && (
+            <button className="btn btn-primary" onClick={() => navigate('/create')}>
+              <PlusIcon className="size-5" />
+              Create Note
+            </button>
+          )}
+        </div>
       </div>
 
-      {notes.length === 0 ? (
+      {loading ? (
+        <LoadingSpinner message={`Loading notes...`} />
+      ) : notes.length === 0 ? (
         <div className="text-center py-12">
           <div className="max-w-md mx-auto">
             <svg
@@ -190,6 +249,17 @@ const NoteContent = ({
             note.title || 'Untitled'
           )}
         </div>
+        {/* Tags Display */}
+        {note.tags && note.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {note.tags.map((tag, index) => (
+              <span key={index} className="badge badge-primary badge-outline badge-sm gap-1">
+                <TagIcon className="size-3" />
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="list-col-wrap text-sm text-base-600 mt-2 line-clamp-2">
           {searchQuery ? (
             <Highlighter
@@ -205,7 +275,9 @@ const NoteContent = ({
         <div className="text-xs text-base-400 mt-2">
           {showDeleted && note.deletedAt
             ? `Deleted ${formatDate(note.deletedAt)}`
-            : formatDate(note.createdAt)}
+            : note.updatedAt && note.updatedAt !== note.createdAt
+              ? `Updated ${formatDate(note.updatedAt)}`
+              : formatDate(note.createdAt)}
         </div>
       </div>
     </>

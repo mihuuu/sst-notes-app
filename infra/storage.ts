@@ -3,12 +3,24 @@ export const bucket = new sst.aws.Bucket("Uploads");
 
 // Create the DynamoDB table
 export const table = new sst.aws.Dynamo("Notes", {
-    fields: {
-      userId: "string",
-      noteId: "string",
+  fields: {
+    userId: "string",
+    noteId: "string",
+    createdAt: "number",
+    updatedAt: "number",
+  },
+  primaryIndex: { hashKey: "userId", rangeKey: "noteId" },
+  globalIndexes: {
+    "userId-createdAt-index": {
+      hashKey: "userId",
+      rangeKey: "createdAt",
     },
-    primaryIndex: { hashKey: "userId", rangeKey: "noteId" },
-  });
+    "userId-updatedAt-index": {
+      hashKey: "userId",
+      rangeKey: "updatedAt",
+    },
+  },
+});
 
 // Create a secret for Stripe
 export const secret = new sst.Secret("StripeSecretKey");

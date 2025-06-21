@@ -7,27 +7,31 @@ const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
+  const noteId = event.pathParameters?.id;
+
+  if (!noteId) {
+    throw new Error("Note ID is required");
+  }
 
   const params = {
     TableName: Resource.Notes.name,
     Key: {
-      // The attributes of the item to be created
-      userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId, // The id of the author
-      noteId: event?.pathParameters?.id, // The id of the note from the path
+      userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId,
+      noteId: noteId,
     },
-    // 'UpdateExpression' defines the attributes to be updated
-    // 'ExpressionAttributeValues' defines the value in the update expression
     UpdateExpression:
-      "SET title = :title, content = :content, attachment = :attachment, starred = :starred",
+      "set title = :title, content = :content, attachment = :attachment, tags = :tags, updatedAt = :updatedAt",
     ExpressionAttributeValues: {
-      ":title": data.title || null,
-      ":attachment": data.attachment || null,
-      ":content": data.content || null,
-      ":starred": data.starred !== undefined ? data.starred : false,
+      ":title": data.title,
+      ":content": data.content,
+      ":attachment": data.attachment,
+      ":tags": data.tags || [],
+      ":updatedAt": Date.now(),
     },
+    ReturnValues: "ALL_NEW" as const,
   };
 
-  await dynamoDb.send(new UpdateCommand(params));
+  const result = await dynamoDb.send(new UpdateCommand(params));
 
-  return JSON.stringify({ status: true });
+  return JSON.stringify(result.Attributes);
 });

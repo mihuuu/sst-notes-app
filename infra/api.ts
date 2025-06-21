@@ -24,6 +24,9 @@ api.route("GET /notes/{id}", "packages/functions/src/get.main");
 // get all notes of the user
 api.route("GET /notes", "packages/functions/src/list.main");
 
+// get all tags of the user
+api.route("GET /tags", "packages/functions/src/tags.main");
+
 // update a note
 api.route("PUT /notes/{id}", "packages/functions/src/update.main");
 

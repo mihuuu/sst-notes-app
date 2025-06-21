@@ -5,6 +5,7 @@ import { post, put } from 'aws-amplify/api';
 import ReactMarkdown from 'react-markdown';
 import { useFormFields, useLoadingState } from '../utils/hooks';
 import AttachmentDisplay from './AttachmentDisplay';
+import TagInput from './TagInput';
 import type { Note } from '../types/note';
 
 interface NoteFormProps {
@@ -29,6 +30,8 @@ export default function NoteForm({
     title: originalNote?.title || '',
     content: originalNote?.content || '',
   });
+
+  const [tags, setTags] = useState<string[]>(originalNote?.tags || []);
 
   const {
     loading: isSubmitting,
@@ -112,6 +115,7 @@ export default function NoteForm({
         title: data.title,
         content: data.content,
         attachment: attachmentUrl,
+        tags: tags,
       };
 
       let response;
@@ -219,6 +223,9 @@ export default function NoteForm({
               </label>
             )}
           </div>
+
+          {/* Tags Input */}
+          <TagInput tags={tags} onChange={setTags} />
 
           {/* Content Input with Preview Toggle */}
           <div className="form-control">

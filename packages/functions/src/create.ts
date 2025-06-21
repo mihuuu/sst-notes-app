@@ -11,6 +11,7 @@ export const main = Util.handler(async (event) => {
     title: "",
     content: "",
     attachment: "",
+    tags: [],
   };
 
   if (event.body != null) {
@@ -26,7 +27,9 @@ export const main = Util.handler(async (event) => {
       title: data.title, // Parsed from request body
       content: data.content, // Parsed from request body
       attachment: data.attachment, // Parsed from request body
+      tags: data.tags || [], // Parsed from request body
       createdAt: Date.now(), // Current Unix timestamp
+      updatedAt: Date.now(), // Current Unix timestamp
       starred: false, // Default to not starred
     },
   };

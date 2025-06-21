@@ -12,7 +12,9 @@ import Favorites from './containers/Favorites';
 import List from './containers/List';
 import Trash from './containers/Trash';
 import Search from './containers/Search';
+import Tags from './containers/Tags';
 import LoadingSpinner from './components/LoadingSpinner';
+import AllTags from './containers/AllTags';
 import './App.css';
 
 function App() {
@@ -27,7 +29,7 @@ function App() {
       <Navbar />
       <div className="flex flex-grow flex-row">
         {isAuthenticated && <Sidebar />}
-        <div className="flex-grow max-h-screen overflow-auto p-10">
+        <div className="flex-grow max-h-screen overflow-auto p-8">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -36,6 +38,8 @@ function App() {
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/trash" element={<Trash />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/all_tags" element={<AllTags />} />
+            <Route path="/tags/:tag" element={<Tags />} />
             <Route path="/create" element={<CreateNote />} />
             <Route path="/note/:noteId" element={<ViewNote />} />
             <Route path="*" element={<NotFound />} />

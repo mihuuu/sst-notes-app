@@ -6,7 +6,8 @@ import { QueryCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const main = Util.handler(async (event) => {
-  const { starred, keyword, deleted } = event.queryStringParameters || {};
+  const { starred, keyword, deleted, sortBy, sortOrder, tag } =
+    event.queryStringParameters || {};
 
   const params: any = {
     TableName: Resource.Notes.name,
@@ -21,6 +22,21 @@ export const main = Util.handler(async (event) => {
         event.requestContext.authorizer?.iam.cognitoIdentity.identityId,
     },
   };
+
+  // Use GSI for sorting by createdAt if requested
+  if (sortBy === "createdAt") {
+    params.IndexName = "userId-createdAt-index";
+    // DynamoDB sorts in ascending order by default, so we need to reverse for desc
+    if (sortOrder === "desc") {
+      params.ScanIndexForward = false;
+    }
+  } else if (sortBy === "updatedAt") {
+    params.IndexName = "userId-updatedAt-index";
+    // DynamoDB sorts in ascending order by default, so we need to reverse for desc
+    if (sortOrder === "desc") {
+      params.ScanIndexForward = false;
+    }
+  }
 
   // Build filter expression for multiple conditions
   const filterConditions: string[] = [];
@@ -53,6 +69,12 @@ export const main = Util.handler(async (event) => {
     params.ExpressionAttributeValues[":keyword"] = keyword.trim();
   }
 
+  // Add filter for tags if requested
+  if (tag && tag.trim()) {
+    filterConditions.push("contains(tags, :tag)");
+    params.ExpressionAttributeValues[":tag"] = tag.trim();
+  }
+
   // Combine all filter conditions
   if (filterConditions.length > 0) {
     params.FilterExpression = filterConditions.join(" AND ");
@@ -60,6 +82,5 @@ export const main = Util.handler(async (event) => {
 
   const result = await dynamoDb.send(new QueryCommand(params));
 
-  // Return the matching list of items in response body
-  return JSON.stringify(result.Items);
+  return JSON.stringify(result.Items || []);
 });
