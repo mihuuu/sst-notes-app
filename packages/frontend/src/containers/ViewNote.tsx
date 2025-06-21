@@ -132,8 +132,8 @@ export default function ViewNote() {
                 >
                   Edit
                 </button>
-                <button onClick={() => navigate('/list')} className="btn btn-outline">
-                  Back to List
+                <button onClick={() => navigate(-1)} className="btn btn-outline">
+                  Go Back
                 </button>
               </div>
             </div>

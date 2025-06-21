@@ -10,6 +10,7 @@ import { useAuth } from './contexts/AuthContext';
 import Sidebar from './components/Sidebar';
 import Favorites from './containers/Favorites';
 import List from './containers/List';
+import Trash from './containers/Trash';
 import LoadingSpinner from './components/LoadingSpinner';
 import './App.css';
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/list" element={<List />} />
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/trash" element={<Trash />} />
             <Route path="/create" element={<CreateNote />} />
             <Route path="/note/:noteId" element={<ViewNote />} />
             <Route path="*" element={<NotFound />} />

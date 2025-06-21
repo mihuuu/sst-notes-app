@@ -5,14 +5,10 @@ import { UpdateCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-/**
- * Soft Delete
- */
 export const main = Util.handler(async (event) => {
   const userId =
     event.requestContext.authorizer?.iam.cognitoIdentity.identityId;
   const noteId = event?.pathParameters?.id;
-  const deletedAt = Date.now();
 
   const params = {
     TableName: Resource.Notes.name,
@@ -20,10 +16,9 @@ export const main = Util.handler(async (event) => {
       userId: userId,
       noteId: noteId,
     },
-    UpdateExpression: "SET deleted = :deleted, deletedAt = :deletedAt",
+    UpdateExpression: "SET deleted = :deleted REMOVE deletedAt",
     ExpressionAttributeValues: {
-      ":deleted": true,
-      ":deletedAt": deletedAt,
+      ":deleted": false,
     },
   };
 

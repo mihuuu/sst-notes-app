@@ -27,8 +27,17 @@ api.route("GET /notes", "packages/functions/src/list.main");
 // update a note
 api.route("PUT /notes/{id}", "packages/functions/src/update.main");
 
-// delete a note
+// delete a note (soft delete)
 api.route("DELETE /notes/{id}", "packages/functions/src/delete.main");
+
+// restore a deleted note
+api.route("PUT /notes/{id}/restore", "packages/functions/src/restore.main");
+
+// permanently delete a note from trash
+api.route(
+  "DELETE /notes/{id}/permanent",
+  "packages/functions/src/permanent-delete.main"
+);
 
 // star/unstar a note
 api.route("PUT /notes/{id}/star", "packages/functions/src/star.main");

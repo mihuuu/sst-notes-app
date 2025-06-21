@@ -6,7 +6,7 @@ export default function Favorites() {
     <AuthWrapper>
       <NotesList
         title="Favorite Notes"
-        filterStarred={true}
+        showStarred={true}
         emptyStateTitle="No favorites"
         emptyStateDescription="Star notes to see them here."
         countLabel="Starred notes"

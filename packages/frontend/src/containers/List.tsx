@@ -4,7 +4,7 @@ import NotesList from '../components/NotesList';
 export default function List() {
   return (
     <AuthWrapper>
-      <NotesList title="My Notes" filterStarred={false} />
+      <NotesList title="My Notes" showStarred={false} />
     </AuthWrapper>
   );
 }

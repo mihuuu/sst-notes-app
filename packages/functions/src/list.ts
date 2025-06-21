@@ -6,7 +6,7 @@ import { QueryCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const main = Util.handler(async (event) => {
-  const { starred, search } = event.queryStringParameters || {};
+  const { starred, search, deleted } = event.queryStringParameters || {};
 
   const params: any = {
     TableName: Resource.Notes.name,
@@ -24,6 +24,19 @@ export const main = Util.handler(async (event) => {
 
   // Build filter expression for multiple conditions
   const filterConditions: string[] = [];
+
+  // Add filter for deleted notes
+  if (deleted !== undefined) {
+    const isDeleted = deleted === "true";
+    filterConditions.push("deleted = :deleted");
+    params.ExpressionAttributeValues[":deleted"] = isDeleted;
+  } else {
+    // By default, exclude deleted notes
+    filterConditions.push(
+      "(attribute_not_exists(deleted) OR deleted = :deleted)"
+    );
+    params.ExpressionAttributeValues[":deleted"] = false;
+  }
 
   // Add filter for starred notes if requested
   if (starred !== undefined) {

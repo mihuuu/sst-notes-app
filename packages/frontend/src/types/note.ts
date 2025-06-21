@@ -5,4 +5,6 @@ export interface Note {
   attachment: string;
   createdAt: number;
   starred?: boolean;
+  deleted?: boolean;
+  deletedAt?: number;
 }

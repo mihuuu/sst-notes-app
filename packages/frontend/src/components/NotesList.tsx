@@ -13,11 +13,16 @@ import {
   TrashIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import {
+  StarIcon as StarIconSolid,
+  ArrowUturnLeftIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/24/solid';
 
 interface NotesListProps {
   title: string;
-  filterStarred?: boolean;
+  showStarred?: boolean;
+  showDeleted?: boolean;
   emptyStateTitle?: string;
   emptyStateDescription?: string;
   countLabel?: string;
@@ -26,7 +31,8 @@ interface NotesListProps {
 
 export default function NotesList({
   title,
-  filterStarred = false,
+  showStarred = false,
+  showDeleted = false,
   emptyStateTitle = 'No notes',
   emptyStateDescription = 'Get started by creating a new note.',
   countLabel = 'Total notes',
@@ -41,8 +47,11 @@ export default function NotesList({
       clearError();
       // Build query parameters
       const queryParams = new URLSearchParams();
-      if (filterStarred) {
+      if (showStarred) {
         queryParams.append('starred', 'true');
+      }
+      if (showDeleted) {
+        queryParams.append('deleted', 'true');
       }
 
       const response = await get({
@@ -68,7 +77,11 @@ export default function NotesList({
 
   useEffect(() => {
     fetchNotes();
-  }, [filterStarred]);
+  }, [showStarred, showDeleted]);
+
+  const handleRemoveItem = (noteId: string) => {
+    setNotes((prev) => prev.filter((n) => n.noteId !== noteId));
+  };
 
   // Show loading while fetching notes
   if (loading) {
@@ -122,10 +135,10 @@ export default function NotesList({
             <NoteItem
               key={note.noteId}
               note={note}
-              filterStarred={filterStarred}
-              onRemoveFromList={(noteId) =>
-                setNotes((prev) => prev.filter((n) => n.noteId !== noteId))
-              }
+              showStarred={showStarred}
+              showDeleted={showDeleted}
+              onRemoveFromList={handleRemoveItem}
+              disableClick={showDeleted}
             />
           ))}
         </ul>
@@ -134,23 +147,50 @@ export default function NotesList({
   );
 }
 
-const NoteItem = ({
-  note,
-  filterStarred,
-  onRemoveFromList,
-}: {
-  note: Note;
-  filterStarred?: boolean;
-  onRemoveFromList?: (noteId: string) => void;
-}) => {
-  const [starred, setStarred] = useState(!!note.starred);
-  const [isStarring, setIsStarring] = useState(false);
-  const navigate = useNavigate();
-
+// Note content display component
+const NoteContent = ({ note, showDeleted }: { note: Note; showDeleted?: boolean }) => {
   const truncateContent = (content: string, maxLength: number = 500) => {
     if (content.length <= maxLength) return content;
     return content.substring(0, maxLength) + '...';
   };
+
+  return (
+    <>
+      <div className="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+        <DocumentTextIcon className="size-5 text-primary" />
+      </div>
+      <div className="flex-1 mx-2">
+        <div className="font-semibold">{note.title || 'Untitled'}</div>
+        <div className="list-col-wrap text-sm text-base-600 mt-2 line-clamp-2">
+          {truncateContent(note.content)}
+        </div>
+        <div className="text-xs text-base-400 mt-2">
+          {showDeleted && note.deletedAt
+            ? `Deleted ${formatDate(note.deletedAt)}`
+            : formatDate(note.createdAt)}
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Refactored NoteItem component
+const NoteItem = ({
+  note,
+  showStarred,
+  showDeleted,
+  onRemoveFromList,
+  disableClick,
+}: {
+  note: Note;
+  showStarred?: boolean;
+  showDeleted?: boolean;
+  onRemoveFromList?: (noteId: string) => void;
+  disableClick?: boolean;
+}) => {
+  const [starred, setStarred] = useState(!!note.starred);
+  const [isStarring, setIsStarring] = useState(false);
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     navigate(`/note/${note.noteId}`);
@@ -161,16 +201,74 @@ const NoteItem = ({
     navigate(`/note/${note.noteId}?edit=true`);
   };
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
-    // TODO: Implement delete functionality
-    console.log('Delete note:', note.noteId);
+  /** Permanently delete from trash */
+  const handlePermanentDelete = async () => {
+    try {
+      const { del } = await import('aws-amplify/api');
+      await del({
+        apiName: 'notes',
+        path: `/notes/${note.noteId}/permanent`,
+      });
+
+      // Remove from list
+      if (onRemoveFromList) {
+        onRemoveFromList(note.noteId);
+      }
+    } catch (error) {
+      console.error('Error permanently deleting note:', error);
+      alert('Failed to permanently delete note');
+    }
   };
 
-  const handleStar = async (e: React.MouseEvent) => {
+  /** Soft delete, can be restored in the trash */
+  const handleSoftDelete = async () => {
+    try {
+      const { del } = await import('aws-amplify/api');
+      await del({
+        apiName: 'notes',
+        path: `/notes/${note.noteId}`,
+      });
+
+      // Remove from list
+      if (onRemoveFromList) {
+        onRemoveFromList(note.noteId);
+      }
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      alert('Failed to delete note');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (showDeleted) {
+      // Permanently delete from trash
+      await handlePermanentDelete();
+    } else {
+      // Move to trash (soft delete)
+      await handleSoftDelete();
+    }
+  };
+
+  const handleRestore = async () => {
+    try {
+      const { put } = await import('aws-amplify/api');
+      await put({
+        apiName: 'notes',
+        path: `/notes/${note.noteId}/restore`,
+      });
+
+      if (onRemoveFromList) {
+        onRemoveFromList(note.noteId);
+      }
+    } catch (error) {
+      console.error('Error restoring note:', error);
+      alert('Failed to restore note');
+    }
+  };
+
+  const handleStar = async () => {
     if (isStarring) return; // Prevent double-clicks
     setIsStarring(true);
-    e.stopPropagation(); // Prevent card click
 
     // Store original state for potential rollback
     const originalStarred = starred;
@@ -180,7 +278,7 @@ const NoteItem = ({
       setStarred((prev) => !prev);
 
       // If we're in favorites view and the note is being unstarred, remove it from the list
-      if (filterStarred && starred && onRemoveFromList) {
+      if (showStarred && starred && onRemoveFromList) {
         onRemoveFromList(note.noteId);
       }
 
@@ -198,7 +296,7 @@ const NoteItem = ({
       setStarred(originalStarred);
       // If we removed the note from favorites list, we need to add it back
       // This is a bit complex, so we'll just refetch the list on error
-      if (filterStarred && originalStarred) {
+      if (showStarred && originalStarred) {
         // Trigger a refetch to restore the correct state
         window.location.reload();
       }
@@ -211,34 +309,102 @@ const NoteItem = ({
     <li
       className="list-row cursor-pointer hover:bg-base-200/50 transition-colors py-5 flex-wrap gap-y-4"
       key={note.noteId}
-      onClick={handleCardClick}
+      onClick={disableClick ? undefined : handleCardClick}
     >
-      <div className="size-10 rounded-full bg-primary/20 flex items-center justify-center">
-        <DocumentTextIcon className="size-5 text-primary" />
-      </div>
-      <div className="flex-1 mx-2">
-        <div className="font-semibold">{note.title || 'Untitled'}</div>
-        <div className="list-col-wrap text-sm text-base-600 mt-2 line-clamp-2">
-          {truncateContent(note.content)}
-        </div>
-        <div className="text-xs text-base-400 mt-2">{formatDate(note.createdAt)}</div>
-      </div>
+      <NoteContent note={note} showDeleted={showDeleted} />
 
-      <div className="flex-none flex justify-end space-x-2">
-        <button className={`btn btn-square btn-ghost`} onClick={handleStar} disabled={isStarring}>
-          {starred ? (
-            <StarIconSolid className="size-5 text-yellow-500" />
-          ) : (
-            <StarIcon className="size-5" />
-          )}
-        </button>
-        <button className="btn btn-square btn-ghost" onClick={handleEdit}>
-          <PencilSquareIcon className="size-5" />
-        </button>
-        <button className="btn btn-square btn-ghost" onClick={handleDelete}>
-          <TrashIcon className="size-5" />
-        </button>
+      <div className="flex-none flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
+        {showDeleted ? (
+          <>
+            <RestoreBtn onRestore={handleRestore} />
+            <DeleteBtn confirmDelete={handleDelete} isPermanent={true} />
+          </>
+        ) : (
+          <NormalListActions
+            starred={starred}
+            isStarring={isStarring}
+            onStar={handleStar}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
       </div>
     </li>
+  );
+};
+
+// Normal list action buttons
+const NormalListActions = ({
+  starred,
+  isStarring,
+  onStar,
+  onEdit,
+  onDelete,
+}: {
+  starred: boolean;
+  isStarring: boolean;
+  onStar: (e: React.MouseEvent) => void;
+  onEdit: (e: React.MouseEvent) => void;
+  onDelete: (e: React.MouseEvent) => void;
+}) => {
+  return (
+    <>
+      <button className={`btn btn-square btn-ghost`} onClick={onStar} disabled={isStarring}>
+        {starred ? (
+          <StarIconSolid className="size-5 text-yellow-500" />
+        ) : (
+          <StarIcon className="size-5" />
+        )}
+      </button>
+      <button className="btn btn-square btn-ghost" onClick={onEdit}>
+        <PencilSquareIcon className="size-5" />
+      </button>
+      <DeleteBtn confirmDelete={onDelete} isPermanent={false} />
+    </>
+  );
+};
+
+const RestoreBtn = ({ onRestore }: { onRestore: (e: React.MouseEvent) => void }) => {
+  return (
+    <button className="btn btn-square btn-ghost" onClick={onRestore}>
+      <ArrowUturnLeftIcon className="size-5" />
+    </button>
+  );
+};
+
+const DeleteBtn = ({
+  confirmDelete,
+  isPermanent,
+}: {
+  confirmDelete: (e: React.MouseEvent) => void;
+  isPermanent: boolean;
+}) => {
+  return (
+    <div className="dropdown dropdown-end">
+      <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
+        <TrashIcon className="size-5" />
+      </div>
+      <ul
+        tabIndex={0}
+        className="dropdown-content menu bg-base-100 rounded-box shadow-lg z-10 w-80 p-4 flex flex-col gap-2"
+      >
+        <div className="text-sm text-error flex items-center gap-2">
+          <ExclamationTriangleIcon className="size-5 flex-none" />
+          {isPermanent
+            ? 'Do you want to permanently delete this note? This action CANNOT be undone.'
+            : 'Do you want to delete this note? It will be moved to trash.'}
+        </div>
+
+        <button
+          className="btn btn-sm btn-error btn-outline mt-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            confirmDelete(e);
+          }}
+        >
+          Confirm
+        </button>
+      </ul>
+    </div>
   );
 };

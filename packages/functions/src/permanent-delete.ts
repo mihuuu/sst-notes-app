@@ -1,18 +1,14 @@
 import { Resource } from "sst";
 import { Util } from "@notes/core/util";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { UpdateCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-/**
- * Soft Delete
- */
 export const main = Util.handler(async (event) => {
   const userId =
     event.requestContext.authorizer?.iam.cognitoIdentity.identityId;
   const noteId = event?.pathParameters?.id;
-  const deletedAt = Date.now();
 
   const params = {
     TableName: Resource.Notes.name,
@@ -20,14 +16,9 @@ export const main = Util.handler(async (event) => {
       userId: userId,
       noteId: noteId,
     },
-    UpdateExpression: "SET deleted = :deleted, deletedAt = :deletedAt",
-    ExpressionAttributeValues: {
-      ":deleted": true,
-      ":deletedAt": deletedAt,
-    },
   };
 
-  await dynamoDb.send(new UpdateCommand(params));
+  await dynamoDb.send(new DeleteCommand(params));
 
   return JSON.stringify({ status: true });
 });
