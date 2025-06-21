@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'aws-amplify/api';
+import Highlighter from 'react-highlight-words';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorDisplay from './ErrorDisplay';
 import { useLoadingState } from '../utils/hooks';
@@ -27,6 +28,7 @@ interface NotesListProps {
   emptyStateDescription?: string;
   countLabel?: string;
   showCreateButton?: boolean;
+  searchQuery?: string;
 }
 
 export default function NotesList({
@@ -37,6 +39,7 @@ export default function NotesList({
   emptyStateDescription = 'Get started by creating a new note.',
   countLabel = 'Total notes',
   showCreateButton = true,
+  searchQuery,
 }: NotesListProps) {
   const navigate = useNavigate();
   const [notes, setNotes] = useState<Note[]>([]);
@@ -52,6 +55,9 @@ export default function NotesList({
       }
       if (showDeleted) {
         queryParams.append('deleted', 'true');
+      }
+      if (searchQuery && searchQuery.trim()) {
+        queryParams.append('keyword', searchQuery.trim());
       }
 
       const response = await get({
@@ -77,7 +83,7 @@ export default function NotesList({
 
   useEffect(() => {
     fetchNotes();
-  }, [showStarred, showDeleted]);
+  }, [showStarred, showDeleted, searchQuery]);
 
   const handleRemoveItem = (noteId: string) => {
     setNotes((prev) => prev.filter((n) => n.noteId !== noteId));
@@ -139,6 +145,7 @@ export default function NotesList({
               showDeleted={showDeleted}
               onRemoveFromList={handleRemoveItem}
               disableClick={showDeleted}
+              searchQuery={searchQuery}
             />
           ))}
         </ul>
@@ -148,11 +155,22 @@ export default function NotesList({
 }
 
 // Note content display component
-const NoteContent = ({ note, showDeleted }: { note: Note; showDeleted?: boolean }) => {
+const NoteContent = ({
+  note,
+  showDeleted,
+  searchQuery,
+}: {
+  note: Note;
+  showDeleted?: boolean;
+  searchQuery?: string;
+}) => {
   const truncateContent = (content: string, maxLength: number = 500) => {
     if (content.length <= maxLength) return content;
     return content.substring(0, maxLength) + '...';
   };
+
+  const truncatedContent = truncateContent(note.content);
+  const searchWords = searchQuery ? searchQuery.split(' ').filter((word) => word.length > 0) : [];
 
   return (
     <>
@@ -160,9 +178,29 @@ const NoteContent = ({ note, showDeleted }: { note: Note; showDeleted?: boolean 
         <DocumentTextIcon className="size-5 text-primary" />
       </div>
       <div className="flex-1 mx-2">
-        <div className="font-semibold">{note.title || 'Untitled'}</div>
+        <div className="font-semibold">
+          {searchQuery ? (
+            <Highlighter
+              highlightClassName="bg-primary-200 dark:bg-primary-800 font-semibold"
+              searchWords={searchWords}
+              autoEscape={true}
+              textToHighlight={note.title || 'Untitled'}
+            />
+          ) : (
+            note.title || 'Untitled'
+          )}
+        </div>
         <div className="list-col-wrap text-sm text-base-600 mt-2 line-clamp-2">
-          {truncateContent(note.content)}
+          {searchQuery ? (
+            <Highlighter
+              highlightClassName="bg-primary-200 dark:bg-primary-800 font-semibold"
+              searchWords={searchWords}
+              autoEscape={true}
+              textToHighlight={truncatedContent}
+            />
+          ) : (
+            truncatedContent
+          )}
         </div>
         <div className="text-xs text-base-400 mt-2">
           {showDeleted && note.deletedAt
@@ -181,12 +219,14 @@ const NoteItem = ({
   showDeleted,
   onRemoveFromList,
   disableClick,
+  searchQuery,
 }: {
   note: Note;
   showStarred?: boolean;
   showDeleted?: boolean;
   onRemoveFromList?: (noteId: string) => void;
   disableClick?: boolean;
+  searchQuery?: string;
 }) => {
   const [starred, setStarred] = useState(!!note.starred);
   const [isStarring, setIsStarring] = useState(false);
@@ -311,7 +351,7 @@ const NoteItem = ({
       key={note.noteId}
       onClick={disableClick ? undefined : handleCardClick}
     >
-      <NoteContent note={note} showDeleted={showDeleted} />
+      <NoteContent note={note} showDeleted={showDeleted} searchQuery={searchQuery} />
 
       <div className="flex-none flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
         {showDeleted ? (
@@ -366,9 +406,26 @@ const NormalListActions = ({
 
 const RestoreBtn = ({ onRestore }: { onRestore: (e: React.MouseEvent) => void }) => {
   return (
-    <button className="btn btn-square btn-ghost" onClick={onRestore}>
-      <ArrowUturnLeftIcon className="size-5" />
-    </button>
+    <div className="dropdown dropdown-end">
+      <div tabIndex={0} role="button" className="btn btn-square btn-ghost">
+        <ArrowUturnLeftIcon className="size-5" />
+      </div>
+      <ul
+        tabIndex={0}
+        className="dropdown-content menu bg-base-100 rounded-box shadow-lg z-10 w-80 p-4 flex flex-col gap-2"
+      >
+        <div className="text-sm">Do you want to restore this note?</div>
+        <button
+          className="btn btn-sm btn-primary btn-outline mt-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRestore(e);
+          }}
+        >
+          Confirm
+        </button>
+      </ul>
+    </div>
   );
 };
 

@@ -88,7 +88,6 @@ export default function AttachmentDisplay({ fileName, className = '' }: Attachme
   };
 
   const isImage = (mimeType: string) => mimeType.startsWith('image/');
-  const isPDF = (mimeType: string) => mimeType === 'application/pdf';
 
   if (!fileName) {
     return null;
@@ -166,7 +165,7 @@ export default function AttachmentDisplay({ fileName, className = '' }: Attachme
             </div>
 
             {/* File Preview */}
-            {isImage(attachmentData.type) && (
+            {isImage(attachmentData.type) ? (
               <div className="mt-4">
                 <img
                   src={attachmentData.url}
@@ -178,19 +177,7 @@ export default function AttachmentDisplay({ fileName, className = '' }: Attachme
                   }}
                 />
               </div>
-            )}
-
-            {isPDF(attachmentData.type) && (
-              <div className="mt-4">
-                <iframe
-                  src={attachmentData.url}
-                  className="w-full h-96 border rounded-lg"
-                  title={attachmentData.name}
-                />
-              </div>
-            )}
-
-            {!isImage(attachmentData.type) && !isPDF(attachmentData.type) && (
+            ) : (
               <div className="mt-4 p-4 bg-base-200 rounded-lg">
                 <p className="text-sm text-base-content/60">
                   Preview not available for this file type. Click download to access the file.

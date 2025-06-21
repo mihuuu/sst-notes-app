@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import ThemeToggle from './ThemeToggle';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function Navbar() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -10,6 +11,19 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     navigate('/');
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const searchVal = formData.get('search') as string;
+    e.currentTarget.reset();
+
+    if (searchVal && searchVal.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchVal.trim())}`);
+    } else {
+      navigate('/list');
+    }
   };
 
   return (
@@ -24,25 +38,18 @@ export default function Navbar() {
         <ThemeToggle />
         {isLoading ? null : isAuthenticated ? (
           <>
-            <label className="input">
-              <svg
-                className="h-[1em] opacity-50 hidden sm:block"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2.5"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </g>
-              </svg>
-              <input type="search" className="grow" placeholder="Search" />
-            </label>
+            <form onSubmit={handleSearchSubmit}>
+              <label className="input w-60">
+                <MagnifyingGlassIcon className="h-[1em] opacity-50 hidden sm:block" />
+                <input
+                  type="search"
+                  name="search"
+                  className="grow w-full"
+                  placeholder="Search notes..."
+                  // onChange={handleSearch}
+                />
+              </label>
+            </form>
 
             <div className="dropdown dropdown-end">
               <div

@@ -16,6 +16,7 @@
     "lodash": "^4.17.21",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-highlight-words": "^0.21.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.6.2",
     "tailwindcss": "^4.1.10"
@@ -26,6 +27,7 @@
     "@types/lodash": "^4.17.18",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/react-highlight-words": "^0.20.0",
     "@vitejs/plugin-react": "^4.4.1",
     "daisyui": "^5.0.43",
     "eslint": "^9.25.0",

@@ -11,6 +11,7 @@ import Sidebar from './components/Sidebar';
 import Favorites from './containers/Favorites';
 import List from './containers/List';
 import Trash from './containers/Trash';
+import Search from './containers/Search';
 import LoadingSpinner from './components/LoadingSpinner';
 import './App.css';
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/list" element={<List />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/trash" element={<Trash />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/create" element={<CreateNote />} />
             <Route path="/note/:noteId" element={<ViewNote />} />
             <Route path="*" element={<NotFound />} />

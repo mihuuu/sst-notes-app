@@ -74,7 +74,7 @@ export default function ViewNote() {
 
   const handleEditCancel = () => {
     setIsEditing(false);
-    navigate('/list');
+    navigate(-1);
   };
 
   // Show loading while fetching note

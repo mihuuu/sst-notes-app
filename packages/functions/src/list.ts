@@ -6,7 +6,7 @@ import { QueryCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const main = Util.handler(async (event) => {
-  const { starred, search, deleted } = event.queryStringParameters || {};
+  const { starred, keyword, deleted } = event.queryStringParameters || {};
 
   const params: any = {
     TableName: Resource.Notes.name,
@@ -46,11 +46,11 @@ export const main = Util.handler(async (event) => {
   }
 
   // Add search filter if requested (search in title and content)
-  if (search && search.trim()) {
+  if (keyword && keyword.trim()) {
     filterConditions.push(
-      "(contains(title, :search) OR contains(content, :search))"
+      "(contains(title, :keyword) OR contains(content, :keyword))"
     );
-    params.ExpressionAttributeValues[":search"] = search.trim();
+    params.ExpressionAttributeValues[":keyword"] = keyword.trim();
   }
 
   // Combine all filter conditions
