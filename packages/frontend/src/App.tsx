@@ -25,11 +25,11 @@ function App() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen min-w-screen">
+    <main className="flex flex-col h-screen w-screen">
       <Navbar />
-      <div className="flex flex-grow flex-row">
+      <div className="flex flex-grow flex-row h-[calc(100vh-4rem)]">
         {isAuthenticated && <Sidebar />}
-        <div className="flex-grow max-h-screen overflow-auto p-8">
+        <div className="flex-grow box-border h-full overflow-auto p-8">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
