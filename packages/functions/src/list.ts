@@ -82,5 +82,8 @@ export const main = Util.handler(async (event) => {
 
   const result = await dynamoDb.send(new QueryCommand(params));
 
-  return JSON.stringify(result.Items || []);
+  return JSON.stringify({
+    items: result.Items || [],
+    total: result.Count || 0,
+  });
 });

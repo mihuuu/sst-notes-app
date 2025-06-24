@@ -53,6 +53,11 @@ const sortOptions: SortOption[] = [
   // { value: 'starred-asc', label: 'Unstarred first' },
 ];
 
+interface NoteData {
+  items: Note[];
+  total: number;
+}
+
 export default function NotesList({
   title,
   showStarred = false,
@@ -65,7 +70,7 @@ export default function NotesList({
   tagFilter,
 }: NotesListProps) {
   const navigate = useNavigate();
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<NoteData>({ items: [], total: 0 });
   const [sortBy, setSortBy] = useState<SortField>('createdAt');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const { loading, error, setLoading, setError, clearError } = useLoadingState(true);
@@ -101,7 +106,7 @@ export default function NotesList({
       if (responseData.statusCode === 200) {
         const notesData = await responseData.body.json();
         // No need to filter on frontend anymore - backend handles it
-        setNotes(notesData as unknown as Note[]);
+        setNotes(notesData as unknown as NoteData);
       } else {
         throw new Error('Failed to fetch notes');
       }
@@ -124,7 +129,12 @@ export default function NotesList({
   };
 
   const handleRemoveItem = (noteId: string) => {
-    setNotes((prev) => prev.filter((n) => n.noteId !== noteId));
+    setNotes((prev) => {
+      return {
+        items: prev.items.filter((n) => n.noteId !== noteId),
+        total: prev.total - 1,
+      };
+    });
   };
 
   // Show error if failed to load notes
@@ -170,7 +180,7 @@ export default function NotesList({
 
       {loading ? (
         <LoadingSpinner message={`Loading notes...`} />
-      ) : notes.length === 0 ? (
+      ) : notes.total === 0 ? (
         <div className="text-center py-12">
           <div className="max-w-md mx-auto">
             <svg
@@ -194,9 +204,9 @@ export default function NotesList({
       ) : (
         <ul className="list rounded-box">
           <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-            {countLabel}: {notes.length}
+            {countLabel}: {notes.total}
           </li>
-          {notes.map((note) => (
+          {(notes.items || []).map((note) => (
             <NoteItem
               key={note.noteId}
               note={note}
