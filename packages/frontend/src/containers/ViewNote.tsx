@@ -170,9 +170,9 @@ export default function ViewNote() {
 
             {/* Content */}
             <div className="form-control mb-6">
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text font-semibold mb-2">Content</span>
-              </label>
+              </label> */}
               <div className="p-4 bg-base-50 border border-base-200 rounded-lg min-h-64">
                 {noteData.content ? (
                   <div className="prose prose-sm max-w-none">

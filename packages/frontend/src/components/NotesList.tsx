@@ -21,6 +21,7 @@ import {
   ArrowUturnLeftIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/solid';
+import removeMarkdown from 'remove-markdown';
 
 interface NotesListProps {
   title: string;
@@ -223,6 +224,11 @@ export default function NotesList({
   );
 }
 
+const truncateContent = (content: string, maxLength: number = 500) => {
+  if (content.length <= maxLength) return content;
+  return content.substring(0, maxLength) + '...';
+};
+
 // Note content display component
 const NoteContent = ({
   note,
@@ -233,12 +239,7 @@ const NoteContent = ({
   showDeleted?: boolean;
   searchQuery?: string;
 }) => {
-  const truncateContent = (content: string, maxLength: number = 500) => {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + '...';
-  };
-
-  const truncatedContent = truncateContent(note.content);
+  const plainContent = removeMarkdown(note.content);
   const searchWords = searchQuery ? searchQuery.split(' ').filter((word) => word.length > 0) : [];
 
   return (
@@ -270,16 +271,16 @@ const NoteContent = ({
             ))}
           </div>
         )}
-        <div className="list-col-wrap text-sm text-base-600 mt-2 line-clamp-2">
+        <div className="list-col-wrap text-sm text-base-600 mt-2 line-clamp-3">
           {searchQuery ? (
             <Highlighter
               highlightClassName="bg-primary-200 dark:bg-primary-800 font-semibold"
               searchWords={searchWords}
               autoEscape={true}
-              textToHighlight={truncatedContent}
+              textToHighlight={plainContent}
             />
           ) : (
-            truncatedContent
+            plainContent
           )}
         </div>
         <div className="text-xs text-base-400 mt-2">
