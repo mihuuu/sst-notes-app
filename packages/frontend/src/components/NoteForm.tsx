@@ -301,7 +301,7 @@ export default function NoteForm({
             />
             {selectedFile && (
               <label className="label mt-2">
-                <span className="label-text-alt text-info text-sm">
+                <span className="label-text-alt text-base-content/60 text-sm">
                   Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
                 </span>
                 <button
