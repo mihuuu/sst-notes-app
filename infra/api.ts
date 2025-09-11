@@ -1,4 +1,4 @@
-import { table, secret } from "./storage";
+import { table } from "./storage";
 
 // Create the API
 export const api = new sst.aws.ApiGatewayV2("Api", {
@@ -6,7 +6,7 @@ export const api = new sst.aws.ApiGatewayV2("Api", {
   transform: {
     route: {
       handler: {
-        link: [table, secret],
+        link: [table],
       },
       args: {
         auth: { iam: true },

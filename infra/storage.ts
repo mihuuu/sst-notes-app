@@ -22,5 +22,3 @@ export const table = new sst.aws.Dynamo("Notes", {
   },
 });
 
-// Create a secret for Stripe
-export const secret = new sst.Secret("StripeSecretKey");
