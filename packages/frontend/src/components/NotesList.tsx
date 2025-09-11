@@ -224,11 +224,6 @@ export default function NotesList({
   );
 }
 
-const truncateContent = (content: string, maxLength: number = 500) => {
-  if (content.length <= maxLength) return content;
-  return content.substring(0, maxLength) + '...';
-};
-
 // Note content display component
 const NoteContent = ({
   note,
