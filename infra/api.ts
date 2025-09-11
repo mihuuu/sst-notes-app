@@ -45,5 +45,3 @@ api.route(
 // star/unstar a note
 api.route("PUT /notes/{id}/star", "packages/functions/src/star.main");
 
-// create billing
-api.route("POST /billing", "packages/functions/src/billing.main");

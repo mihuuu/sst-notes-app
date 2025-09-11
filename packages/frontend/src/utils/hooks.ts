@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState } from 'react';
 
 interface FieldsType {
   [key: string | symbol]: string;
