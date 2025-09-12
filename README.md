@@ -2,6 +2,8 @@
 
 A simple, modern note-taking app built with AWS serverless technologies and React + TypeScript frontend.
 
+![List Notes (Dark)](screenshots/list-dark.jpg)
+
 ## Features
 
 - User signup and login
@@ -45,8 +47,12 @@ npx sst deploy --stage production
 - `packages/core/` – Shared utilities and types
 
 ## Screenshots
+Notes list (light theme)
 ![List Notes (Light)](screenshots/list-light.jpg)
-![List Notes (Dark)](screenshots/list-dark.jpg)
+
+Create a note
 ![Create Note](screenshots/create.jpg)
+
+View or edit a note
 ![View/Edit Note](screenshots/view-edit.jpg)
 
