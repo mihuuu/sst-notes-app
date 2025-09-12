@@ -3,6 +3,7 @@ import { table } from "./storage";
 // Create the API
 export const api = new sst.aws.ApiGatewayV2("Api", {
   cors: true,
+  domain: $app.stage === "production" ? "api-notes.hhdmihu.link" : undefined,
   transform: {
     route: {
       handler: {
