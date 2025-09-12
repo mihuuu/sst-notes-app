@@ -12,6 +12,7 @@ A simple, modern note-taking app built with AWS serverless technologies and Reac
 - Delete and restore notes from trash
 - Favorite notes for quick access
 - Tag notes for easy organization
+- Search notes with keyword
 
 ## Tech Stack
 

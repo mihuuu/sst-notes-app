@@ -162,19 +162,6 @@ export default function Login() {
           {errors.password ? <p className="text-error">{errors.password}</p> : null}
 
           <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="checkbox checkbox-xs rounded"
-                disabled={isSubmitting}
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm">
-                Remember me
-              </label>
-            </div>
-
             {/* <div className="text-sm">
               <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
                 Forgot your password?
