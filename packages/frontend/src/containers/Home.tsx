@@ -8,10 +8,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center pt-60">
       <div className="text-center">
         {isAuthenticated && name ? (
-          <>
-            <h2 className="text-4xl font-bold text-base-500">Welcome back, {name}!</h2>
-            <p className="text-lg mt-4 font-light text-base-500">Ready to take some notes?</p>
-          </>
+          <h2 className="text-4xl font-bold text-base-500">Welcome back, {name}!</h2>
         ) : (
           <>
             <h1 className="text-4xl font-bold text-base-500">SnapNote</h1>
